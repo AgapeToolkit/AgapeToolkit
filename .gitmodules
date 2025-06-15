@@ -1,0 +1,3 @@
+[submodule "libs/string"]
+	path = libs/string
+	url = git@github.com:AgapeToolkit/agape-string.git
