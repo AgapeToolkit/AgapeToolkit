@@ -35,6 +35,8 @@ Define your models once and use them across your application—for validation, f
 payloads. Models can be extended with views to shape how they're serialized or queried.
 
 ### [`@agape/object`](libs/agape/object/README.md)
+Extensible objects
+
 Compose TypeScript classes using mixin-style traits and behavioral decorators.
 
 
