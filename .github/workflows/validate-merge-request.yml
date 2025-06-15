@@ -1,0 +1,35 @@
+name: Validate Merge Request
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    name: Nx Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # use your actual Node version
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: ${{ runner.os }}-nx-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nx-
+
+      - name: Run Lint (Affected)
+        run: npx nx affected:lint --base=origin/main --head=HEAD
+
+      - name: Run Unit Tests (Affected)
+        run: npx nx affected:test --base=origin/main --head=HEAD

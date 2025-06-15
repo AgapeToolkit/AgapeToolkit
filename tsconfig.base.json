@@ -1,0 +1,38 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2020",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@agape/alchemy": ["libs/alchemy/src/index.ts"],
+      "@agape/api": ["libs/api/src/index.ts"],
+      "@agape/exception": ["libs/exception/src/index.ts"],
+      "@agape/model": ["libs/model/src/index.ts"],
+      "@agape/model/formats": ["libs/model/src/lib/formats/index.ts"],
+      "@agape/model/temporal": ["libs/model/src/lib/temporal/index.ts"],
+      "@agape/ng-mat-datetime-control": [
+        "libs/ng-mat-datetime-control/src/index.ts"
+      ],
+      "@agape/ng-tie-subscriptions": ["libs/ng-tie-subscriptions/src/index.ts"],
+      "@agape/object": ["libs/object/src/index.ts"],
+      "@agape/orm": ["libs/orm/src/index.ts"],
+      "@agape/rxjs": ["libs/rxjs/src/index.ts"],
+      "@agape/string": ["libs/string/src/index.ts"],
+      "@agape/types": ["libs/types/src/index.ts"]
+    },
+    "outDir": "dist",
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules", "tmp"]
+}

@@ -1,0 +1,9 @@
+{
+  "extends": ["@microsoft/tsdoc/base"],
+  "tagDefinitions": [
+    { "tagName": "@decorator", "syntaxKind": "modifier" },
+    { "tagName": "@decoratorKind", "syntaxKind": "modifier" },
+    { "tagName": "@decoratorPropertyType", "syntaxKind": "modifier" }
+  ],
+  "supportForTags": { "@decorator": true }
+}
