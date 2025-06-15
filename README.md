@@ -11,8 +11,6 @@ once and use it everywhere: database, API, UI, and beyond.
 Whether you're building APIs, validating payloads, modeling data, or transforming objects, Agape gives you the tools to
 do it cleanly and efficiently.
 
----
-
 ## 📦 Libraries
 
 ### [`@agape/alchemy`](libs/agape/alchemy/README.md)
@@ -57,8 +55,6 @@ string manipulations throughout your app.
 
 **Maverik Minett**  
 📧 maverik.minett@gmail.com
-
----
 
 ## 📄  License
 
