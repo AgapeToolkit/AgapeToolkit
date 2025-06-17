@@ -1,0 +1,62 @@
+name: Publish @agape/string
+
+on:
+  push:
+    tags:
+      - 'string-v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout monorepo (AgapeToolkit)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Extract version from tag
+        id: extract
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          LIB_NAME="string"
+          VERSION=${TAG#${LIB_NAME}-v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build @agape/string
+        run: npm run build:string
+
+      - name: Verify tag matches package.json version
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./dist/libs/string/package.json').version")
+          echo "Tag version: ${{ steps.extract.outputs.version }}"
+          echo "Package version: $PACKAGE_VERSION"
+          if [ "$PACKAGE_VERSION" != "${{ steps.extract.outputs.version }}" ]; then
+            echo "❌ Version mismatch"
+            exit 1
+          fi
+
+      - name: Publish @agape/string to npm
+        run: npm publish --access public
+        working-directory: ./dist/libs/string
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Push tag to agape-string submodule
+        run: |
+          cd libs/string
+          git config user.name "Agape CI"
+          git config user.email "ci@agape.dev"
+          git tag v${{ steps.extract.outputs.version }}
+          git remote set-url origin https://${{ secrets.GH_PAT_WRITEABLE }}@github.com/AgapeToolkit/agape-string.git
+          git push origin v${{ steps.extract.outputs.version }}
