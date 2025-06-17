@@ -1,5 +1,4 @@
 {
-  "ignorePatterns": ["**/*"],
   "plugins": ["@nx"],
   "overrides": [
     {

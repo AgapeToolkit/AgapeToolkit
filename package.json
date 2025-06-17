@@ -199,6 +199,7 @@
     "@nx/eslint-plugin": "^21.2.0",
     "@nx/jest": "21.2.0",
     "@nx/js": "21.2.0",
+    "@nx/linter": "^19.8.4",
     "@nx/node": "21.2.0",
     "@nx/web": "21.2.0",
     "@nx/webpack": "21.2.0",
