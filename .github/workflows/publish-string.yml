@@ -63,6 +63,11 @@ jobs:
           # Replace the submodule remote with an authenticated HTTPS URL
           git remote remove origin
           git remote add origin https://$GH_PAT@github.com/AgapeToolkit/agape-string.git
-
-          git tag v${{ steps.extract.outputs.version }}
-          git push origin v${{ steps.extract.outputs.version }}
+      - name: Debug remotes and auth
+        run: |
+          cd libs/string
+          echo ${{ secrets.GH_PAT_WRITEABLE }}
+          git remote -v
+          git config --list | grep url
+        # git tag v${{ steps.extract.outputs.version }}
+        # git push origin v${{ steps.extract.outputs.version }}
