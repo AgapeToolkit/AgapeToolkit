@@ -33,9 +33,6 @@ jobs:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org/'
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Extract version from tag
         id: extract
         run: |
@@ -43,19 +40,22 @@ jobs:
           VERSION=${TAG#string-v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Build @agape/string
-        run: npm run build:string
-
       - name: Verify version matches tag
         run: |
           VERSION_TAG=${{ steps.extract.outputs.version }}
-          VERSION_PKG=$(node -p "require('./dist/libs/string/package.json').version")
+          VERSION_PKG=$(node -p "require('./libs/string/package.json').version")
           echo "Tag version: $VERSION_TAG"
           echo "Package version: $VERSION_PKG"
           if [ "$VERSION_TAG" != "$VERSION_PKG" ]; then
             echo "❌ Version mismatch"
             exit 1
           fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build @agape/string
+        run: npm run build:string
 
       - name: Publish to npm
         run: npm publish --access public
