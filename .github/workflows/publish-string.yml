@@ -14,7 +14,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          submodules: recursive
+          submodules: false  # disable auto submodule fetch with bot creds
+
+      - name: Initialize submodules with write access
+        env:
+          GH_PAT: ${{ secrets.GH_PAT_WRITEABLE }}
+        run: |
+          git submodule init
+          git config -f .gitmodules submodule.libs/string.url https://$GH_PAT@github.com/AgapeToolkit/agape-string.git
+          git submodule update --recursive
 
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -52,22 +60,15 @@ jobs:
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Push tag to agape-string submodule
+      - name: Tag and push submodule (agape-string)
         env:
           GH_PAT: ${{ secrets.GH_PAT_WRITEABLE }}
         run: |
           cd libs/string
           git config user.name "Agape CI"
           git config user.email "ci@agape.dev"
-
-          # Replace the submodule remote with an authenticated HTTPS URL
-          git remote remove origin
+          git remote remove origin || true
           git remote add origin https://$GH_PAT@github.com/AgapeToolkit/agape-string.git
-      - name: Debug remotes and auth
-        run: |
-          cd libs/string
-          echo ${{ secrets.GH_PAT_WRITEABLE }}
-          git remote -v
-          git config --list | grep url
-        # git tag v${{ steps.extract.outputs.version }}
-        # git push origin v${{ steps.extract.outputs.version }}
+          git fetch origin
+          git tag -a v${{ steps.extract.outputs.version }} -m "Release v${{ steps.extract.outputs.version }}"
+          git push origin v${{ steps.extract.outputs.version }}
