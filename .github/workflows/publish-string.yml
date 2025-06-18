@@ -53,10 +53,16 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push tag to agape-string submodule
+        env:
+          GH_PAT: ${{ secrets.GH_PAT_WRITEABLE }}
         run: |
           cd libs/string
           git config user.name "Agape CI"
           git config user.email "ci@agape.dev"
+
+          # Replace the submodule remote with an authenticated HTTPS URL
+          git remote remove origin
+          git remote add origin https://$GH_PAT@github.com/AgapeToolkit/agape-string.git
+
           git tag v${{ steps.extract.outputs.version }}
-          git remote set-url origin https://${{ secrets.GH_PAT_WRITEABLE }}@github.com/AgapeToolkit/agape-string.git
           git push origin v${{ steps.extract.outputs.version }}
