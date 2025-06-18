@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "prepare": "husky",
     "build:datetime": "npm run build:datetime:before && npm run build:datetime:cjs && npm run build:datetime:es2020 && npm run build:datetime:es2015 && npm run build:datetime:after",
     "build:datetime:before": "rm -r -f dist/libs/datetime && mkdir -p dist/libs/datetime",
     "build:datetime:after": "cp libs/datetime/README.md dist/libs/datetime/README.md && cp libs/datetime/LICENSE dist/libs/datetime/LICENSE && cp libs/datetime/package.json dist/libs/datetime/package.json",
@@ -228,6 +229,7 @@
     "eslint": "8.57.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-cypress": "2.15.1",
+    "husky": "^9.1.7",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "jest-environment-node": "^29.4.1",
