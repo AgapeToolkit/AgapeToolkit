@@ -46,11 +46,11 @@ jobs:
             exit 1
           fi
 
-      - name: Publish @agape/string to npm
-        run: npm publish --access public
-        working-directory: ./dist/libs/string
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Publish @agape/string to npm
+      #   run: npm publish --access public
+      #   working-directory: ./dist/libs/string
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push tag to agape-string submodule
         env:
