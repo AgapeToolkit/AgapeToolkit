@@ -3,6 +3,12 @@ import path from 'path';
 
 const JSON_DOCS_PATH = 'docs/json'
 
+function fileExists(file: string) {
+  const filepath = `${JSON_DOCS_PATH}/${file}`;
+  return fs.existsSync(filepath);
+}
+
+
 function updateName(file: string, name: string) {
 
   console.log(`Updating ${file} → ${name}`)
@@ -59,7 +65,7 @@ function getJsonFilePaths(dirPath: string, baseDir: string = dirPath): string[] 
       if (fs.statSync(fullPath).isDirectory()) {
           // Recursive call for directories
           jsonFiles.push(...getJsonFilePaths(fullPath, baseDir));
-      } else if (item.endsWith('.json')) {
+      } else if (item.endsWith('.json') && item !== 'index.json') {
           // Add relative path of JSON files
           jsonFiles.push(relativePath);
       }
@@ -68,9 +74,8 @@ function getJsonFilePaths(dirPath: string, baseDir: string = dirPath): string[] 
   return jsonFiles;
 }
 
-
-updateName('model-formats.json', '@agape/model/formats')
-updateName('model-temporal.json', '@agape/model/temporal')
+if (fileExists('model-formats.json')) updateName('model-formats.json', '@agape/model/formats')
+if (fileExists('model-formats.json')) updateName('model-temporal.json', '@agape/model/temporal')
 
 const index = createIndex()
 writeIndex(index, 'index.json')
