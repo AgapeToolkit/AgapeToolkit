@@ -1,5 +1,6 @@
 {
   "plugins": ["@nx"],
+  "extends": ["./.eslintrc.base.json"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -39,6 +40,5 @@
       },
       "rules": {}
     }
-  ],
-  "extends": ["./.eslintrc.base.json"]
+  ]
 }
