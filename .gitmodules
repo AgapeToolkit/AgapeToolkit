@@ -1,3 +1,6 @@
 [submodule "libs/string"]
 	path = libs/string
 	url = git@github.com:AgapeToolkit/agape-string.git
+[submodule "libs/agape-types"]
+	path = libs/agape-types
+	url = git@github.com:AgapeToolkit/agape-types.git
