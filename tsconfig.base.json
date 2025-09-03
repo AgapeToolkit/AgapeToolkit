@@ -29,8 +29,7 @@
       "@agape/orm": ["libs/orm/src/index.ts"],
       "@agape/rxjs": ["libs/rxjs/src/index.ts"],
       "@agape/string": ["libs/string/src/index.ts"],
-      "@agape/types": ["libs/types/src/index.ts"],
-      "@agape/types/util": ["libs/types/src/util/index.ts"]
+      "@agape/types": ["libs/types/src/index.ts"]
     },
     "outDir": "dist",
     "esModuleInterop": true
