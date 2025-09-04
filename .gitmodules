@@ -4,3 +4,6 @@
 [submodule "libs/types"]
 	path = libs/types
 	url = git@github.com:AgapeToolkit/agape-types.git
+[submodule "libs/metadata"]
+	path = libs/metadata
+	url = git@github.com:AgapeToolkit/agape-metadata.git
