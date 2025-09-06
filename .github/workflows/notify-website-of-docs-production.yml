@@ -1,0 +1,48 @@
+name: Tag agape-website for content version
+
+on:
+  push:
+    tags:
+      - "docs-v*"
+
+jobs:
+  tag-content-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout monorepo (AgapeToolkit)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: vars
+        run: |
+          RAW_TAG=${GITHUB_REF#refs/tags/}   # e.g. docs-v1.2.3
+          VERSION=${RAW_TAG#docs-}           # strip "docs-"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "raw_tag=$RAW_TAG" >> $GITHUB_OUTPUT
+
+      - name: Checkout agape-website repo
+        run: |
+          git clone https://${{ secrets.GH_PAT_WRITEABLE }}@github.com/AgapeToolkit/agape-website.git
+          cd agape-website
+          git fetch --tags
+
+      - name: Create and push tag in agape-website
+        run: |
+          cd agape-website
+          git config user.name "Agape CI"
+          git config user.email "ci@agape.dev"
+
+          TAG="content-${{ steps.vars.outputs.version }}"
+
+          # Delete existing tag if it already exists
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "⚠️ Tag $TAG already exists, deleting and recreating..."
+            git tag -d "$TAG"
+            git push origin :refs/tags/$TAG
+          fi
+
+          git tag -a "$TAG" -m "Content version tag for $TAG (from ${{ steps.vars.outputs.raw_tag }})"
+          git push origin "$TAG"
