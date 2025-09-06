@@ -130,7 +130,7 @@
     "docs:html:model-formats": "typedoc --tsconfig libs/model/tsconfig.lib.json --out docs/html/model-formats libs/model/src/lib/formats/index.ts",
     "docs:html:model-temporal": "typedoc --tsconfig libs/model/tsconfig.lib.json --out docs/html/model-temporal libs/model/src/lib/temporal/index.ts",
     "docs:json:bk": "rm -rf docs/json && npm run docs:json:model && npm run docs:json:model-formats && npm run docs:json:model-temporal && npm run docs:json:api && npm run docs:json:metadata && npm run docs:json:string && npm run docs:process:json",
-    "docs:json": "rm -rf docs/json && npm run docs:json:string && npm run docs:process:json",
+    "docs:json": "rm -rf docs/json && npm run docs:json:string && npm run docs:json:metadata && npm run docs:json:types && npm run docs:process:json",
     "docs:process:json": "ts-node --project tools/tsconfig.tools.json tools/scripts/update-json-docs.ts",
     "docs:json:model": "typedoc --tsconfig libs/model/tsconfig.lib.json --json docs/json/model.json libs/model/src/index.ts",
     "docs:json:model-formats": "typedoc --tsconfig libs/model/tsconfig.lib.json --json docs/json/model-formats.json libs/model/src/lib/formats/index.ts",
@@ -138,6 +138,7 @@
     "docs:json:api": "typedoc --tsconfig libs/api/tsconfig.lib.json --json docs/json/api.json libs/api/src/index.ts",
     "docs:json:metadata": "typedoc --tsconfig libs/metadata/tsconfig.lib.json --json docs/json/metadata.json libs/metadata/src/index.ts",
     "docs:json:string": "typedoc --tsconfig libs/string/tsconfig.lib.json --json docs/json/string.json libs/string/src/index.ts",
+    "docs:json:types": "typedoc --tsconfig libs/types/tsconfig.lib.json --json docs/json/types.json libs/types/src/index.ts",
     "docs:export": "rm -rf ../agape-website/docs/reference && cp -r docs/json ../agape-website/docs/reference"
   },
   "private": true,

@@ -1,0 +1,46 @@
+name: Tag agape-website for content staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag-content-staging:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout monorepo (AgapeToolkit)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get short commit hash
+        id: vars
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
+
+      - name: Checkout agape-website repo
+        run: |
+          git clone https://${{ secrets.GH_PAT_WRITEABLE }}@github.com/AgapeToolkit/agape-website.git
+          cd agape-website
+          git fetch --tags
+
+      - name: Create and push tag in agape-website
+        run: |
+          cd agape-website
+          git config user.name "Agape CI"
+          git config user.email "ci@agape.dev"
+
+          TAG="content-staging-${{ steps.vars.outputs.short_sha }}"
+
+          # Delete existing tag if it already exists
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "⚠️ Tag $TAG already exists, deleting and recreating..."
+            git tag -d "$TAG"
+            git push origin :refs/tags/$TAG
+          fi
+
+          git tag -a "$TAG" -m "Content staging tag for $TAG"
+          git push origin "$TAG"
