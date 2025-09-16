@@ -1,0 +1,73 @@
+name: Publish @agape/metadata
+
+on:
+  push:
+    tags:
+      - 'metadata-v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout monorepo (AgapeToolkit)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: false  # we’ll init manually with HTTPS
+
+      - name: Patch .gitmodules to use HTTPS
+        run: |
+          # Replace all `git@github.com:` with HTTPS including the token
+          sed -i "s|git@github.com:|https://${{ secrets.GH_PAT_WRITEABLE }}@github.com/|g" .gitmodules
+          cat .gitmodules  # Optional: debug output
+
+      - name: Init and update submodules with HTTPS
+        run: |
+          git submodule sync
+          git submodule update --init --recursive
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Extract version from tag
+        id: extract
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG#metadata-v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Verify version matches tag
+        run: |
+          VERSION_TAG=${{ steps.extract.outputs.version }}
+          VERSION_PKG=$(node -p "require('./libs/metadata/package.json').version")
+          echo "Tag version: $VERSION_TAG"
+          echo "Package version: $VERSION_PKG"
+          if [ "$VERSION_TAG" != "$VERSION_PKG" ]; then
+            echo "❌ Version mismatch"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build @agape/metadata
+        run: npm run build:metadata
+
+      - name: Publish to npm
+        run: npm publish --access public
+        working-directory: ./dist/libs/metadata
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Tag and push child repo
+        run: |
+          cd libs/metadata
+          git config user.name "Agape CI"
+          git config user.email "ci@agape.dev"
+          git remote set-url origin https://${{ secrets.GH_PAT_WRITEABLE }}@github.com/AgapeToolkit/agape-metadata.git
+          git tag -a v${{ steps.extract.outputs.version }} -m "Release v${{ steps.extract.outputs.version }}"
+          git push origin v${{ steps.extract.outputs.version }}
