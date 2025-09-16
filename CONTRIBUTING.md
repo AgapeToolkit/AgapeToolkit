@@ -39,6 +39,21 @@ If you already cloned without `--recurse-submodules`, initialize submodules manu
 git submodule update --init --recursive
 ```
 
+### Common Tasks
+
+**Build all packages**:
+```bash
+npx nx run-many -t build
+```
+**Run tests**:
+```bash
+npx nx run-many -t test
+```
+**Lint everything**:
+```bash
+npx nx run-many -t lint
+```
+
 ---
 
 ## 🍴 Forking and Hot-Swapping a Library

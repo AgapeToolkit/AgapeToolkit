@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
+    "build:all": "npm run build types && npm run build string && npm run build metadata",
     "build:datetime": "npm run build:datetime:before && npm run build:datetime:cjs && npm run build:datetime:es2020 && npm run build:datetime:es2015 && npm run build:datetime:after",
     "build:datetime:before": "rm -r -f dist/libs/datetime && mkdir -p dist/libs/datetime",
     "build:datetime:after": "cp libs/datetime/README.md dist/libs/datetime/README.md && cp libs/datetime/LICENSE dist/libs/datetime/LICENSE && cp libs/datetime/package.json dist/libs/datetime/package.json",
@@ -75,7 +76,7 @@
     "test:types": "npx nx test agape-types",
     "build:types": "npm run build:types:before && npm run build:types:cjs && npm run build:types:es2020 && npm run build:types:after",
     "build:types:before": "rm -r -f dist/libs/types",
-    "build:types:after": "cp libs/types/README.md dist/libs/types/README.md && cp libs/types/package.json dist/libs/types/package.json",
+    "build:types:after": "cp libs/types/README.dist.md dist/libs/types/README.md && cp libs/types/package.json dist/libs/types/package.json",
     "build:types:cjs": "npm run build:types:cjs:build && npm run build:types:cjs:move && npm run build:types:cjs:clean",
     "build:types:cjs:build": "npx tsc -p libs/types/tsconfig.cjs.json --outDir dist/libs/types/cjs.in",
     "build:types:cjs:move": "mv dist/libs/types/cjs.in/libs/types/src dist/libs/types/cjs",
