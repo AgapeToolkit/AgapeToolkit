@@ -7,3 +7,6 @@
 [submodule "libs/metadata"]
 	path = libs/metadata
 	url = git@github.com:AgapeToolkit/agape-metadata.git
+[submodule "libs/locale"]
+	path = libs/locale
+	url = git@github.com:AgapeToolkit/agape-locale.git
