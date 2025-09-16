@@ -1,62 +1,137 @@
-# Agape
+# AgapeToolkit
 
-A modular TypeScript toolkit for building modern, DRY web applications.
+AgapeToolkit is a collection of TypeScript libraries for building modern APIs
+and UIs with clarity, consistency, and confidence.
 
-## Overview
+It provides a **single source of truth** for your data models and powers validation,
+serialization, ORM, API layers, and user interfaces — all from the same definitions.
 
-**Agape** is a collection of focused libraries designed to work together to streamline backend and frontend development 
-in TypeScript. It emphasizes declarative design, reusability, and consistency across layers—so you can define your data 
-once and use it everywhere: database, API, UI, and beyond.
+> **Status:** Active development. Expect rapid iteration and breaking changes until v1.0.
 
-Whether you're building APIs, validating payloads, modeling data, or transforming objects, Agape gives you the tools to
-do it cleanly and efficiently.
+---
 
-## 📦 Libraries
+## 📦 Packages
 
-### [`@agape/alchemy`](libs/agape/alchemy/README.md)
-Powerful serialization and transformation engine.
+This monorepo contains multiple packages published under the `@agape/*` scope. Each can be used independently or together.
 
-Customize how your models are turned into plain objects for network transmission. Deserialize and validate payloads into
-usable models—on both the server and client.
+| Package            | Description                                                        | npm                                                                 | Docs                                   |
+| ------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------------- |----------------------------------------|
+| `@agape/model`     | Annotate and validate models for APIs and UIs.                     | [![npm](https://img.shields.io/npm/v/@agape/model.svg)](https://www.npmjs.com/package/@agape/model) | [Docs](https://agape.dev/api)          |
+| `@agape/api`       | Build REST APIs directly from your models.                         | [![npm](https://img.shields.io/npm/v/@agape/api.svg)](https://www.npmjs.com/package/@agape/api) | [Docs](https://agape.dev/docs/api)     |
+| `@agape/orm`       | Simple ORM for mapping models to relational databases.             | [![npm](https://img.shields.io/npm/v/@agape/orm.svg)](https://www.npmjs.com/package/@agape/orm) | [Docs](https://agape.dev/docs/orm)     |
+| `@agape/alchemy`   | Serialization and deserialization utilities for models.            | [![npm](https://img.shields.io/npm/v/@agape/alchemy.svg)](https://www.npmjs.com/package/@agape/alchemy) | [Docs](https://agape.dev/docs/alchemy) |
+| `@agape/object`    | Compose classes with mixin-style traits and behavioral decorators.  | [![npm](https://img.shields.io/npm/v/@agape/object.svg)](https://www.npmjs.com/package/@agape/object) | [Docs](https://agape.dev/docs/object)   |
+### Supporting Packages
 
-### [`@agape/api`](libs/agape/api/README.md)
-Elegant REST API construction with Express.
-
-Build robust HTTP controllers and route handlers backed by data models. Automatically validate incoming query parameters
-and JSON payloads. Leverage the same models used for persistence and UI generation.
-
-
-### [`@agape/model`](libs/agape/model/README.md)
-Declarative data modeling for TypeScript.
-
-Define your models once and use them across your application—for validation, form rendering, database queries, and API
-payloads. Models can be extended with views to shape how they're serialized or queried.
-
-### [`@agape/object`](libs/agape/object/README.md)
-Extensible objects
-
-Compose TypeScript classes using mixin-style traits and behavioral decorators.
+These packages are used internally by the main libraries but can also be useful on their own.
 
 
-### [`@agape/orm`](libs/agape/orm/README.md)
-A lightweight ORM layer for MongoDB.
-
-Use your Agape models to query, insert, and update MongoDB documents without creating a separate schema layer. Designed 
-for model-driven data access with minimal boilerplate.
-
-### [`@agape/string`](libs/agape/string/README.md)
-String utilities for common transformations.
-
-Convert strings between casing formats (camelCase, kebab-case, etc.), tokenize identifiers, and perform other helpful 
-string manipulations throughout your app.
+| Package           | Description                                                        | npm                                                                                                       | Docs                          |
+|-------------------| ------------------------------------------------------------------ |-----------------------------------------------------------------------------------------------------------|-------------------------------|
+| `@agape/locale`   | Serialization and deserialization utilities for models.            | [![npm](https://img.shields.io/npm/v/@agape/locale.svg)](https://www.npmjs.com/package/@agape/locale)     | [Docs](https://agape.dev/api) |
+| `@agape/metadata` | Annotate and validate models for APIs and UIs.                     | [![npm](https://img.shields.io/npm/v/@agape/metadata.svg)](https://www.npmjs.com/package/@agape/metadata) | [Docs](https://agape.dev/api) |
+| `@agape/string`   | Build REST APIs directly from your models.                         | [![npm](https://img.shields.io/npm/v/@agape/string.svg)](https://www.npmjs.com/package/@agape/string)     | [Docs](https://agape.dev/api) |
+| `@agape/types`    | Simple ORM for mapping models to relational databases.             | [![npm](https://img.shields.io/npm/v/@agape/types.svg)](https://www.npmjs.com/package/@agape/types)       | [Docs](https://agape.dev/api) |
 
 
-## 👤 Author
+See [agape.dev](https://agape.dev) for the full list of packages and documentation.
 
-**Maverik Minett**  
-📧 maverik.minett@gmail.com
+---
 
-## 📄  License
+## 🚀 Quick Example
 
-MIT License  
-© 2020–2025 Maverik Minett
+Let's build a complete application for editing employee records.
+
+### Create the model
+
+```ts
+import { Model, Field } from '@agape/model';
+
+@Model
+class Employee {
+  @Field
+  @PrimaryKey
+  id!: number;
+  
+  @Field 
+  @Alphanumeric
+  number!: string;
+  
+  @Field 
+  @MaxLength(64)
+  name!: string;
+  
+  @Field
+  @Email
+  email!: string;
+}
+```
+
+### Register the model with the ORM
+
+```ts
+import { orm } from '@agape/orm';
+
+orm.register(Employee);
+```
+
+### Create the API controller
+
+```ts
+import { Controller } from '@agape/api';
+import { Traits } from '@agape/object';
+
+interface EmployeeController extends HasCrudOperations<Employee> { }
+
+@Controller('employees')
+@Traits(CanPerformCrud(Employee))
+class EmployeeController { }
+```
+
+### Bootstrap the API
+
+```ts
+import express from 'express';
+import { bootstrapExpress } from '@agape/api';
+
+const app = express();
+boostrapExpress(app, EmployeeController);
+app.listen(3000);
+```
+
+### Create the API Client
+
+```ts
+ag g client --name EmployeeApi \
+  --server http://localhost:3000 \
+  --root /api
+  --controller EmployeeController
+  --models @myapp/models
+  --output apps/frontend/src/app/shared/services/employee-api.ts
+```
+
+### Create the UI
+
+```ts
+import { Route } from '@angular/router';
+import { crudRoutes } from '@agape/ui';
+import { EmployeeApi } from './shared/services/employee-api';
+
+export const appRoutes: Route[] = [
+  ...crudRoutes(
+    { 
+      path: '/employees',
+      model: Employee,
+      api: EmployeeApi
+    }
+  )      
+];
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+## 📄 License
+
+MIT © 2025 [Maverik Minett](https://github.com/maverikminett)
