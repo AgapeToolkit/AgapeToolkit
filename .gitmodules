@@ -10,3 +10,6 @@
 [submodule "libs/locale"]
 	path = libs/locale
 	url = git@github.com:AgapeToolkit/agape-locale.git
+[submodule "libs/util"]
+	path = libs/util
+	url = git@github.com:AgapeToolkit/agape-util.git
