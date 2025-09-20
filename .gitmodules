@@ -13,3 +13,6 @@
 [submodule "libs/util"]
 	path = libs/util
 	url = git@github.com:AgapeToolkit/agape-util.git
+[submodule "libs/temporal"]
+	path = libs/temporal
+	url = git@github.com:AgapeToolkit/agape-temporal.git
