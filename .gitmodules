@@ -16,3 +16,6 @@
 [submodule "libs/temporal"]
 	path = libs/temporal
 	url = git@github.com:AgapeToolkit/agape-temporal.git
+[submodule "libs/datetime"]
+	path = libs/datetime
+	url = git@github.com:AgapeToolkit/agape-datetime.git
