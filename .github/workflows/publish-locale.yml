@@ -39,6 +39,7 @@ jobs:
           TAG=${GITHUB_REF#refs/tags/}
           VERSION=${TAG#locale-v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "raw_tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Verify version matches tag
         run: |
@@ -71,3 +72,77 @@ jobs:
           git remote set-url origin https://${{ secrets.GH_PAT_WRITEABLE }}@github.com/AgapeToolkit/agape-locale.git
           git tag -a v${{ steps.extract.outputs.version }} -m "Release v${{ steps.extract.outputs.version }}"
           git push origin v${{ steps.extract.outputs.version }}
+
+      # Create release assets using existing package script
+      - name: Create release assets
+        id: package
+        run: |
+          # Run the existing package script to create the tarball
+          npm run package:locale
+          
+          # Get the generated package filename
+          PACKAGE_FILE=$(ls dist/packages/agape-locale-*.tgz | head -1)
+          PACKAGE_NAME=$(basename "$PACKAGE_FILE")
+          
+          echo "package_asset=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          echo "package_path=dist/packages/$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          
+          # Create additional assets
+          mkdir -p artifacts
+          
+          # Copy the npm package to artifacts
+          cp "$PACKAGE_FILE" artifacts/
+          
+          # Create source archive
+          tar -czf artifacts/agape-locale-v${{ steps.extract.outputs.version }}-source.tar.gz \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=dist \
+            --exclude=coverage \
+            --exclude=.nyc_output \
+            -C libs/locale .
+          
+          # Create documentation archive
+          mkdir -p docs-temp
+          cp libs/locale/README.md docs-temp/
+          cp libs/locale/LICENSE docs-temp/
+          cp libs/locale/package.json docs-temp/
+          
+          # Add version info
+          echo "{ \"version\": \"v${{ steps.extract.outputs.version }}\", \"name\": \"@agape/locale\", \"description\": \"Internationalization and localization utilities\" }" > docs-temp/version.json
+          
+          tar -czf artifacts/agape-locale-v${{ steps.extract.outputs.version }}-docs.tar.gz -C docs-temp .
+          
+          # Create checksums
+          cd artifacts
+          sha256sum *.tar.gz *.tgz > checksums.txt
+          
+          echo "source_asset=agape-locale-v${{ steps.extract.outputs.version }}-source.tar.gz" >> $GITHUB_OUTPUT
+          echo "docs_asset=agape-locale-v${{ steps.extract.outputs.version }}-docs.tar.gz" >> $GITHUB_OUTPUT
+          echo "checksums_asset=checksums.txt" >> $GITHUB_OUTPUT
+
+      - name: Ensure gh CLI is authenticated
+        run: echo "${{ secrets.GH_PAT_WRITEABLE }}" | gh auth login --with-token
+
+      - name: Create or update release
+        run: |
+          TAG="${{ steps.extract.outputs.raw_tag }}"
+          VERSION="${{ steps.extract.outputs.version }}"
+          
+          echo "🔹 Creating/updating release: $TAG"
+          
+          # Check if release exists and delete it
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG exists, deleting..."
+            gh release delete "$TAG" -y
+          fi
+          
+          # Create new release with assets
+          gh release create "$TAG" \
+            --target "$GITHUB_SHA" \
+            --title "@agape/locale v$VERSION" \
+            --notes "Release v$VERSION" \
+            "artifacts/${{ steps.package.outputs.package_asset }}" \
+            "artifacts/${{ steps.package.outputs.source_asset }}" \
+            "artifacts/${{ steps.package.outputs.docs_asset }}" \
+            "artifacts/${{ steps.package.outputs.checksums_asset }}"
