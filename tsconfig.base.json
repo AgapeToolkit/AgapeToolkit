@@ -27,7 +27,8 @@
       "@agape/string": ["libs/string/src/index.ts"],
       "@agape/types": ["libs/types/src/index.ts"],
       "@agape/locale": ["libs/locale/src/index.ts"],
-      "@agape/temporal": ["libs/temporal/src/index.ts"]
+      "@agape/temporal": ["libs/temporal/src/index.ts"],
+      "@agape/datetime": ["libs/datetime/src/index.ts"]
     },
     "outDir": "dist",
     "esModuleInterop": true
