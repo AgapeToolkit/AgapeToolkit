@@ -1,0 +1,6 @@
+
+```bash
+cd sources
+git clone git@github.com:dr5hn/countries-states-cities-database.git
+
+```
