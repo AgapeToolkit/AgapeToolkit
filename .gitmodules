@@ -19,3 +19,6 @@
 [submodule "libs/datetime"]
 	path = libs/datetime
 	url = git@github.com:AgapeToolkit/agape-datetime.git
+[submodule "libs/standards"]
+	path = libs/standards
+	url = git@github.com:AgapeToolkit/agape-standards.git
