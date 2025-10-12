@@ -5,6 +5,7 @@ dist
 tmp
 /docs
 /out-tsc
+/sources
 
 # dependencies
 node_modules

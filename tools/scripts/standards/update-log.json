@@ -1,0 +1,22 @@
+{
+  "lastRun": "2025-10-12T01:52:37.131Z",
+  "success": true,
+  "steps": {
+    "download": {
+      "success": true,
+      "duration": 1544
+    },
+    "extractCountries": {
+      "success": true,
+      "duration": 776
+    },
+    "extractStates": {
+      "success": true,
+      "duration": 954
+    }
+  },
+  "summary": {
+    "totalDuration": 3278,
+    "statesProcessed": 447
+  }
+}

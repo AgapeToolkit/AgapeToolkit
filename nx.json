@@ -81,5 +81,13 @@
       }
     }
   ],
-  "nxCloudId": "684f0e4637399f5505433bfa"
+  "nxCloudId": "684f0e4637399f5505433bfa",
+  "projects": {
+    "sources": {
+      "root": "sources",
+      "sourceRoot": "sources",
+      "projectType": "library",
+      "targets": {}
+    }
+  }
 }
