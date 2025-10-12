@@ -22,3 +22,6 @@
 [submodule "libs/standards"]
 	path = libs/standards
 	url = git@github.com:AgapeToolkit/agape-standards.git
+[submodule "libs/intl"]
+	path = libs/intl
+	url = git@github.com:AgapeToolkit/agape-intl.git
