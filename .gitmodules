@@ -25,3 +25,6 @@
 [submodule "libs/intl"]
 	path = libs/intl
 	url = git@github.com:AgapeToolkit/agape-intl.git
+[submodule "libs/i18n"]
+	path = libs/i18n
+	url = git@github.com:AgapeToolkit/agape-i18n.git
