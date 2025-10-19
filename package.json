@@ -191,7 +191,6 @@
     "tools:standards:download": "ts-node --project tools/tsconfig.tools.json tools/scripts/standards/download-database.ts",
     "tools:standards:extract-countries": "ts-node --project tools/tsconfig.tools.json tools/scripts/standards/extract-country-codes.ts",
     "tools:standards:extract-states": "ts-node --project tools/tsconfig.tools.json tools/scripts/standards/extract-state-codes.ts",
-    "tools:standards:extract-locales": "ts-node --project tools/tsconfig.tools.json tools/scripts/standards/extract-locales.ts",
     "tools:standards:update": "ts-node --project tools/tsconfig.tools.json tools/scripts/standards/update-all.ts",
     "tools:standards:generate-tests": "ts-node --project tools/tsconfig.tools.json tools/scripts/standards/generate-country-tests.ts",
     "tools:standards:test-intl-support": "ts-node --project tools/tsconfig.tools.json tools/scripts/standards/test-intl-country-support.ts",
