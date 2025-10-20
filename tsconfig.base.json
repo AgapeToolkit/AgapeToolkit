@@ -30,7 +30,10 @@
       "@agape/temporal": ["libs/temporal/src/index.ts"],
       "@agape/datetime": ["libs/datetime/src/index.ts"],
       "@agape/util": ["libs/util/src/index.ts"],
-      "@agape/standards": ["libs/standards/src/index.ts"]
+      "@agape/standards": ["libs/standards/src/index.ts"],
+      "@agape/intl": ["libs/intl/src/index.ts"],
+      "@agape/i18n": ["libs/i18n/src/index.ts"],
+      "@agape/translations": ["libs/translations/src/index.ts"]
     },
     "outDir": "dist",
     "esModuleInterop": true
