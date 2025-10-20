@@ -28,3 +28,6 @@
 [submodule "libs/i18n"]
 	path = libs/i18n
 	url = git@github.com:AgapeToolkit/agape-i18n.git
+[submodule "libs/translations"]
+	path = libs/translations
+	url = git@github.com:AgapeToolkit/agape-translations.git
