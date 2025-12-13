@@ -35,7 +35,7 @@ export function generateConstantExport(constantName: string, value: Record<strin
     .map(([key, val]) => `  '${key}': '${val.replace(/'/g, "\\'")}'`)
     .join(',\n');
   
-  return `export const ${constantName} = {\n${entries}\n} as const;`;
+  return `export const ${constantName} = Object.freeze({\n${entries}\n} as const);`;
 }
 
 /**
@@ -192,4 +192,63 @@ Countries with "no translations" have state codes defined in the standards datab
 `;
 
   writeFile(reportPath, report);
+}
+
+/**
+ * Generates loader file content for a specific locale
+ */
+export function generateLoaderFileContent(
+  locale: string,
+  countryCode: string,
+  constantName: string
+): string {
+  return `import { i18n } from '@agape/i18n';
+import { ${constantName} } from '../../definitions/states/${countryCode.toLowerCase()}';
+
+i18n.define('${locale}', 'states.${countryCode}', ${constantName});
+`;
+}
+
+/**
+ * Generates index file content for root locale
+ */
+export function generateIndexFileContent(
+  countryCode: string,
+  constantName: string
+): string {
+  return `import { i18n } from '@agape/i18n';
+import { ${constantName} } from '../../definitions/states/${countryCode.toLowerCase()}';
+
+i18n.define('root', 'states.${countryCode}', ${constantName});
+`;
+}
+
+/**
+ * Generates loader files for a country
+ */
+export function generateCountryLoaderFiles(
+  basePath: string,
+  countryCode: string,
+  locales: string[],
+  rootConstantName: string
+): void {
+  const countryDir = path.join(basePath, countryCode.toLowerCase());
+  
+  // Create country directory
+  if (!fs.existsSync(countryDir)) {
+    fs.mkdirSync(countryDir, { recursive: true });
+  }
+  
+  // Generate locale files
+  for (const locale of locales) {
+    const constantName = `STATES_${countryCode}_${locale.toUpperCase()}`;
+    const filePath = path.join(countryDir, `${locale}.ts`);
+    const content = generateLoaderFileContent(locale, countryCode, constantName);
+    writeFile(filePath, content);
+  }
+  
+  // Generate index.ts file for root locale
+  const indexPath = path.join(countryDir, 'index.ts');
+  const indexContent = generateIndexFileContent(countryCode, rootConstantName);
+  writeFile(indexPath, indexContent);
 }
