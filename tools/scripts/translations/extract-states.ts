@@ -17,6 +17,7 @@ import {
   generateAliasExport, 
   generateFileHeader,
   generateCountryDirectoryStructure,
+  generateCountryLoaderFiles,
   generateCoverageReport as writeCoverageReport
 } from './utils/file-writer.ts';
 
@@ -502,6 +503,49 @@ function generateCountryDefinitionFiles(
   }
 }
 
+/**
+ * Generates loader files for each country
+ */
+function generateLoaderFiles(
+  translations: TranslationData[],
+  nativeLanguages: Map<string, string>
+): void {
+  // Group by country
+  const translationsByCountry = new Map<string, TranslationData[]>();
+  translations.forEach(t => {
+    if (!translationsByCountry.has(t.country)) {
+      translationsByCountry.set(t.country, []);
+    }
+    translationsByCountry.get(t.country)!.push(t);
+  });
+
+  console.log(`Generating loader files for ${translationsByCountry.size} countries...`);
+
+  for (const [countryCode, countryTranslations] of translationsByCountry) {
+    const locales = countryTranslations.map(t => t.locale);
+    const nativeLanguage = nativeLanguages.get(countryCode);
+    
+    console.log(`Processing ${countryCode}: ${locales.length} locales, native: ${nativeLanguage}`);
+    
+    // Determine root constant name (use native language or fallback to EN)
+    const rootConstantName = nativeLanguage && countryTranslations.some(t => t.locale === nativeLanguage)
+      ? `STATES_${countryCode}_ROOT`
+      : `STATES_${countryCode}_EN`;
+    
+    // Generate loader files
+    generateCountryLoaderFiles(
+      TRANSLATIONS_DIR,
+      countryCode,
+      locales,
+      rootConstantName
+    );
+    
+    console.log(`✅ Generated loader files for ${countryCode}`);
+  }
+  
+  console.log(`✅ Generated loader files for ${translationsByCountry.size} countries`);
+}
+
 
 /**
  * Generates coverage report
@@ -636,6 +680,7 @@ function main(): void {
     generateMainIndexFile(translations, nativeLanguages, metadata);
     generateAutoLoaderFiles(translations, nativeLanguages);
     generateCountryDefinitionFiles(translations, nativeLanguages, metadata);
+    generateLoaderFiles(translations, nativeLanguages);
     
     // Generate coverage report
     console.log('📊 Generating coverage report...');
